@@ -1,13 +1,13 @@
-#!/usr/bin/python
+#!/usr/src/Python-3.7.3/python
 from pprint import pprint as pp
 from requests import get
 import json, re, os, time
 from influxdb import InfluxDBClient
 
 conf = {
-        'url': 'http://<hassio ip >:40850/api/',
+        'url': 'http://192.168.100.244:40850/api/',
         'auth' : '988112a4e198cc1211',
-        'ifx' : {'host': '<hassio ip>', 'port': 8086, 'usr_': 'admin', 'pass_': 'PaSsWoRd', 'DB_': 'deconz_data'}
+        'ifx' : {'host': '192.168.100.244', 'port': 8086, 'usr_': 'admin', 'pass_': 'PaSsWoRd', 'DB_': 'deconz_data'}
         }
 
 client = InfluxDBClient(host=conf['ifx']['host'], port=conf['ifx']['port'], username=conf['ifx']['usr_'], password=conf['ifx']['pass_'])
@@ -22,18 +22,7 @@ def url_ (api):
 api_ = 'lights'
 data = json.loads(url_(api_).text)
 t = int(time.time())*1000000000
-
-
-'''
-Please identify the model in poshcon and add your model power usage
-'''
-watts = {
-        'Classic A60 W clear - LIGHTIFY' : 8.5,
-        'RB 245' : 5.3,
-        'BY 265' : 9.0 
-        }
-
-
+watts = json.load(open('models.json', 'r'))
 for i in data.keys():
     if data[i]['modelid'] in watts.keys() and (data[i]['state']['on'] == True and data[i]['state']['reachable'] == True):
         watts_val = watts[(data[i]['modelid'])]
