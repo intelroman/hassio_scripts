@@ -24,12 +24,13 @@ data = json.loads(url_(api_).text)
 t = int(time.time())*1000000000
 watts = json.load(open('models.json', 'r'))
 for i in data.keys():
-    if data[i]['modelid'] in watts.keys() and (data[i]['state']['on'] == True and data[i]['state']['reachable'] == True):
+    manufacturer = data[i].get('manufacturername')
+    if data[i]['manufacturername'] in watts.keys() and data[i]['modelid'] in watts[manufacturer].keys() and (data[i]['state']['on'] == True and data[i]['state']['reachable'] == True):
         watts_val = watts[(data[i]['modelid'])]
         data[i]['state'].update({'consumption': watts_val})
         data[i]['state'].update({'on': 1})
         data[i].update({'is_state': 'on'})
-    elif data[i]['modelid'] in watts.keys() and (data[i]['state']['on'] == False and data[i]['state']['reachable'] == True): 
+    elif data[i]['manufacturername'] in watts.keys()and  data[i]['modelid'] in watts[manufacturer].keys() and (data[i]['state']['on'] == False and data[i]['state']['reachable'] == True): 
         data[i]['state'].update({'consumption': 0.3})
         data[i]['state'].update({'on': 0})
         data[i].update({'is_state': 'off'})
