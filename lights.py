@@ -26,7 +26,7 @@ watts = json.load(open('models.json', 'r'))
 for i in data.keys():
     manufacturer = data[i].get('manufacturername')
     if data[i]['manufacturername'] in watts.keys() and data[i]['modelid'] in watts[manufacturer].keys() and (data[i]['state']['on'] == True and data[i]['state']['reachable'] == True):
-        watts_val = watts[(data[i]['modelid'])]
+        watts_val = watts[manufacturer][(data[i]['modelid'])]
         data[i]['state'].update({'consumption': watts_val})
         data[i]['state'].update({'on': 1})
         data[i].update({'is_state': 'on'})
