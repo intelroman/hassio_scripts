@@ -6,5 +6,6 @@
 	"innr" : {
 		"RB 245" : 5.3,
        		"BY 265" : 9.0},
-       	"LEDVANCE ": {"A60 TW Z3" : 8.5}
+       	"LEDVANCE ": {"A60 TW Z3" : 8.5},
+	"Philips": {"LWA004": 7.0}
 }
