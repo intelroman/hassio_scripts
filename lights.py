@@ -19,15 +19,24 @@ def url_ (api):
     response = get(url, headers=headers)
     return response
 
+def percent(expression):
+    if "%" in expression:
+        expression = expression.replace("%","/100")
+    return eval(expression)
+
 api_ = 'lights'
 data = json.loads(url_(api_).text)
 t = int(time.time())*1000000000
 watts = json.load(open('models.json', 'r'))
+bri_pct_val = 2.54
 for i in data.keys():
     manufacturer = data[i].get('manufacturername')
     if data[i]['manufacturername'] in watts.keys() and data[i]['modelid'] in watts[manufacturer].keys() and (data[i]['state']['on'] == True and data[i]['state']['reachable'] == True):
         watts_val = watts[manufacturer][(data[i]['modelid'])]
-        data[i]['state'].update({'consumption': watts_val})
+        consumption_ = percent(str(watts_val)+"*"+str(int(data[i]['state'].get('bri')/ bri_pct_val))+"%")
+        if consumption_ < 0.3:
+            consumption_ = 0.3 + consumption_
+        data[i]['state'].update({'consumption': round(consumption_, 1)})
         data[i]['state'].update({'on': 1})
         data[i].update({'is_state': 'on'})
     elif data[i]['manufacturername'] in watts.keys()and  data[i]['modelid'] in watts[manufacturer].keys() and (data[i]['state']['on'] == False and data[i]['state']['reachable'] == True): 
